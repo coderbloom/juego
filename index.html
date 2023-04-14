@@ -1,0 +1,177 @@
+<html>
+    <head>
+        <style>
+            .tablero{
+                border: 1px solid gray;
+            }
+
+            .tablero td{
+                width: 50px;
+                height: 50px;
+                border: 1px solid gray;
+            }
+
+            .tesoro{
+                background: url(image/tesoro.png);
+                background-size: 100% 100%;
+            }
+
+            .jugador{
+                background: url(image/pacman.png);
+                background-size: 100% 100%;
+            }
+            .bloque{
+                background: url(image/bloque.png);
+                background-size: 100% 100%;
+            }
+
+        </style>
+    </head>
+    <body onload="iniciaJuego()">
+        <h1>Coder Bloom</h1>
+        <h3>¡Juguemos!</h3>
+        <h3>Reglas</h3>
+        <p>Utiliza las teclas de direcciones para mover al Pacman en el tablero y comer los logos Coder Bloom. </p>
+        <p> Utiliza la tecla de espacio para crear un nuevo mapa.</p>
+        <table class="tablero">
+            <tr>
+              <td></td>
+              <td></td>
+              <td class="bloque"></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+          </table>
+
+          
+
+          <script>
+            function ponJugador() {
+                window.jugador = [Math.floor(Math.random() * window.renglones), Math.floor(Math.random() * window.columnas)];
+                console.log(window.jugador);
+                window.tablero[window.jugador[0]][window.jugador[1]].classList.toggle('jugador');
+            }
+            function ponBloques() {
+                let bloques = Math.ceil(Math.random() * 0.15 * window.renglones * window.columnas);
+                for (let i = 0; i != bloques; i++) {
+                    let y = Math.floor(Math.random() * window.renglones);
+                    let x = Math.floor(Math.random() * window.columnas);
+                    if (window.tablero[y][x].className != '') {
+                    } else {
+                        window.tablero[y][x].classList.add('bloque');
+                    }
+                }
+            }
+            function ponTesoros() {
+                window.tesorosRestantes = Math.ceil(Math.random() * 0.25 * window.renglones * window.columnas);
+                let tesorosDescartados = 0;
+                for (let i = 0; i != window.tesorosRestantes; i++) {
+                    let y = Math.floor(Math.random() * window.renglones);
+                    let x = Math.floor(Math.random() * window.columnas);
+                    if (window.tablero[y][x].className != '') {
+                        tesorosDescartados += 1;
+                    } else {
+                        window.tablero[y][x].classList.add('tesoro');
+                    }
+                }
+                window.tesorosRestantes -= tesorosDescartados;
+            }
+            function iniciaJuego() {
+                window.tablero = []
+                window.puntos = 0
+                let tableTablero = document.getElementsByClassName('tablero')[0];
+                let tbody = tableTablero.children[0];
+                window.renglones = tbody.children.length;
+                window.columnas = tbody.children[0].children.length;
+                console.log(renglones);
+                console.log(columnas);
+                for (let i = 0; i != window.renglones; i++) {
+                    let renglon = []
+                    window.tablero.push(renglon);
+                    for (let j = 0; j != window.columnas; j++) {
+                        let celda = tbody.children[i].children[j];
+                        renglon.push(celda);
+                        celda.className = '';
+                    }
+                }
+
+                ponJugador();
+                ponBloques();
+                ponTesoros();
+                window.addEventListener('keydown', mueveJugador);
+            }
+            function celdaJugador() {
+                return window.tablero[window.jugador[0]][window.jugador[1]];
+            }
+            function recogeTesoro() {
+                let celda = celdaJugador();
+                if (celda.classList.contains('tesoro')) {
+                    window.puntos += 1;
+                    window.tesorosRestantes -= 1;
+                    celda.classList.remove('tesoro');
+                }
+                console.log(window.puntos);
+            }
+            function mueveHacia(dy, dx) {
+                y = window.jugador[0] + dy;
+                x = window.jugador[1] + dx;
+                if (0 <= y && y < window.renglones && 0 <= x && x < window.columnas && 
+                    !window.tablero[y][x].classList.contains('bloque')) {
+                    celdaJugador().classList.toggle('jugador');
+                    window.jugador = [y, x];
+                    celdaJugador().classList.toggle('jugador');
+                }
+            }
+            function revisaFinDeJuego() {
+                if (window.tesorosRestantes <= 0) {
+                    console.log('Termino el juego, ganaste ' + window.puntos + ' puntos');
+                }
+            }
+            function mueveJugador(e) {
+                if (e.code == 'Space') {
+                    iniciaJuego();
+                    return;
+                }
+                if (e.code == 'ArrowLeft') {
+                    mueveHacia(0, -1);
+                } else if (e.code == 'ArrowRight') {
+                    mueveHacia(0, 1);
+                } else if (e.code == 'ArrowUp') {
+                    mueveHacia(-1, 0);
+                } else if (e.code == 'ArrowDown') {
+                    mueveHacia(1, 0);
+                }
+                recogeTesoro();
+                revisaFinDeJuego();
+            }
+          </script>
+    </body>
+</html>
