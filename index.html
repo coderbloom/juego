@@ -1,8 +1,18 @@
 <html>
     <head>
         <style>
+            .content{
+                text-align: center;
+            }
+
+            .logo{
+                width:400px;
+            }
+
             .tablero{
                 border: 1px solid gray;
+                margin-left: auto;
+                margin-right: auto;
             }
 
             .tablero td{
@@ -25,11 +35,16 @@
                 background-size: 100% 100%;
             }
 
+            .puntuacion {
+                font-size: 20px;
+                margin-top: 25px;
+            }
+
         </style>
     </head>
-    <body onload="iniciaJuego()">
-        <h1>Coder Bloom</h1>
-        <h3>¡Juguemos!</h3>
+    <body onload="iniciaJuego()" class="content">
+        <img src="image/coderbloom.png" alt="" class="logo">
+        <h2>¡Juguemos!</h2>
         <h3>Reglas</h3>
         <p>Utiliza las teclas de direcciones para mover al Pacman en el tablero y comer los logos Coder Bloom. </p>
         <p> Utiliza la tecla de espacio para crear un nuevo mapa.</p>
@@ -71,6 +86,9 @@
               </tr>
           </table>
 
+          <div class="puntuacion">
+            <a id="puntos"></a> 
+          </div>
           
 
           <script>
@@ -127,6 +145,8 @@
                 ponBloques();
                 ponTesoros();
                 window.addEventListener('keydown', mueveJugador);
+                let ele = document.getElementById('puntos');
+                    ele.innerHTML = '';
             }
             function celdaJugador() {
                 return window.tablero[window.jugador[0]][window.jugador[1]];
@@ -139,6 +159,8 @@
                     celda.classList.remove('tesoro');
                 }
                 console.log(window.puntos);
+                let ele = document.getElementById('puntos');
+                ele.innerHTML = 'Puntos: ' + window.puntos;
             }
             function mueveHacia(dy, dx) {
                 y = window.jugador[0] + dy;
@@ -153,6 +175,8 @@
             function revisaFinDeJuego() {
                 if (window.tesorosRestantes <= 0) {
                     console.log('Termino el juego, ganaste ' + window.puntos + ' puntos');
+                    let ele = document.getElementById('puntos');
+                    ele.innerHTML = 'Terminó el juego, ganaste ' + window.puntos + ' puntos';
                 }
             }
             function mueveJugador(e) {
